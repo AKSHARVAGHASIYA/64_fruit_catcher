@@ -43,19 +43,20 @@ Each task must be completed using an iterative process involving LLM suggestions
 
 ### Task 1: Fix the floor miss scoring and life deduction bug
 
-Allowing fruits to fall past the bottom of the screen currently increments the player's score instead of penalizing them. In game_engine.update(), the miss check executes self.score += 1 when fruit.is_missed(self.height) is true. Furthermore, self.lives is never decremented when a fruit is dropped, meaning the player cannot lose lives. Fix this block so that missing a fruit decreases self.lives by 1 (and triggers self.game_state = "GAME_OVER" when self.lives <= 0), ensuring points are only earned on successful basket catches.
+Dropping fruits onto the floor improperly rewards points instead of penalizing the player, and lives never decrease, making it impossible to lose. Correct the miss handling so dropping fruits deducts a life and triggers Game Over when all lives are lost, ensuring points are only earned on valid basket catches.
 
-### Task 2: Implement rotten fruit / hazard bombs
+### Task 2: Implement rotten fruit & hazard bombs
 
-Introduce a hazard item into Fruit (e.g., a black or green spiked bomb/rotten fruit) that occasionally spawns instead of regular fruit. If caught in the basket, deduct a life or penalize points immediately, adding a dodge dynamic to the catching gameplay.
+The player currently only catches beneficial items without needing to dodge. Introduce falling hazard items that deduct lives or penalize score if collected in the basket.
  
 ### Task 3: Implement dynamic falling speed escalation
 
-Fruits currently drop at constant randomized speed bands throughout the entire session. In game_engine, add dynamic difficulty progression: as the player's score increases, gradually shorten self.spawn_delay and increase the baseline fall speed of newly spawned fruits.
+Fruits currently drop at fixed intervals and constant speeds. Gradually increase the challenge as score climbs by shrinking the spawn delay and increasing the baseline falling speed of newly spawned objects/
 
 ### Task 4: Implement fruit splash particle effects
 
-Catching or dropping a fruit currently removes it instantly from the list. Create a lightweight particle emitter system that bursts tiny colored circular droplets matching the fruit's color whenever a fruit hits the basket rim or splatters against the floor.
+Caught or dropped fruits instantly disappear from the screen. Add visual feedback using a lightweight particle system that emits colored splash droplets whenever a fruit lands in the basket or splatters against the floor.
+
 ---
 
 ## Expected Behavior
