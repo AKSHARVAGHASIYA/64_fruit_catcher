@@ -51,8 +51,6 @@ class GameEngine:
                 continue
 
             if fruit.is_missed(self.height):
-                # BUG SYMPTOM: 
-                # Score increases when fruit hits the floor instead of when caught by the basket.
                 self.score += 1
                 self.fruits.remove(fruit)
 
