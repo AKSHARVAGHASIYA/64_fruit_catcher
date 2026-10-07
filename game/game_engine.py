@@ -43,11 +43,14 @@ class GameEngine:
             fruit.update()
 
             if basket_rect.colliderect(fruit.rect):
-
-                self.score += 1
-
-
                 self.fruits.remove(fruit)
+                if fruit.is_hazard:
+                    self.lives -= 1
+                    if self.lives <= 0:
+                        self.game_state = "GAME_OVER"
+                        break
+                else:
+                    self.score += 1
                 continue
 
             if fruit.is_missed(self.height):

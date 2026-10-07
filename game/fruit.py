@@ -8,11 +8,15 @@ class Fruit:
         self.x = random.randint(30, screen_width - 30)
         self.y = -self.radius * 2
         self.speed = random.uniform(4.0, 6.5)
-        self.color = random.choice([
-            (230, 45, 45),   # Apple
-            (245, 140, 30),  # Orange
-            (160, 60, 200),  # Grape
-        ])
+        self.is_hazard = random.random() < 0.2
+        if self.is_hazard:
+            self.color = (35, 35, 40)
+        else:
+            self.color = random.choice([
+                (230, 45, 45),   # Apple
+                (245, 140, 30),  # Orange
+                (160, 60, 200),  # Grape
+            ])
 
     def update(self):
         self.y += self.speed
@@ -31,5 +35,23 @@ class Fruit:
 
     def render(self, surface):
         center = (int(self.x), int(self.y))
+        if self.is_hazard:
+            pygame.draw.circle(surface, self.color, center, self.radius)
+            pygame.draw.circle(surface, (220, 60, 45), center, self.radius, 2)
+            pygame.draw.line(
+                surface,
+                (170, 120, 65),
+                (center[0], center[1] - self.radius),
+                (center[0] + 5, center[1] - self.radius - 6),
+                3,
+            )
+            pygame.draw.circle(
+                surface,
+                (255, 210, 70),
+                (center[0] + 7, center[1] - self.radius - 7),
+                3,
+            )
+            return
+
         pygame.draw.circle(surface, self.color, center, self.radius)
         pygame.draw.circle(surface, (255, 255, 255), (int(self.x - 4), int(self.y - 4)), 3)
