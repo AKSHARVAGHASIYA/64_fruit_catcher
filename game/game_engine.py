@@ -35,7 +35,8 @@ class GameEngine:
 
         now = pygame.time.get_ticks()
         if now - self.last_spawn_time >= self.spawn_delay:
-            self.fruits.append(Fruit(self.width))
+            speed_bonus = min(self.score * 0.05, 2.5)
+            self.fruits.append(Fruit(self.width, speed_bonus))
             self.last_spawn_time = now
 
         basket_rect = self.basket.rect
@@ -51,20 +52,23 @@ class GameEngine:
                         break
                 else:
                     self.score += 1
+                    self.spawn_delay = max(250, min(750, 750 - self.score * 15))
                 continue
 
             if fruit.is_missed(self.height):
                 self.fruits.remove(fruit)
-                self.lives -= 1
-                if self.lives <= 0:
-                    self.game_state = "GAME_OVER"
-                    break
+                if not fruit.is_hazard:
+                    self.lives -= 1
+                    if self.lives <= 0:
+                        self.game_state = "GAME_OVER"
+                        break
 
     def reset(self):
         self.basket = Basket(self.width, self.height)
         self.fruits.clear()
         self.score = 0
         self.lives = 3
+        self.spawn_delay = 750
         self.last_spawn_time = pygame.time.get_ticks()
         self.game_state = "PLAYING"
 

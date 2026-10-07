@@ -2,12 +2,12 @@ import random
 import pygame
 
 class Fruit:
-    def __init__(self, screen_width):
+    def __init__(self, screen_width, speed_bonus=0.0):
         self.screen_width = screen_width
         self.radius = 14
         self.x = random.randint(30, screen_width - 30)
         self.y = -self.radius * 2
-        self.speed = random.uniform(4.0, 6.5)
+        self.speed = max(4.0, min(random.uniform(4.0, 6.5) + speed_bonus, 9.0))
         self.is_hazard = random.random() < 0.2
         if self.is_hazard:
             self.color = (35, 35, 40)
