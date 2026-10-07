@@ -1,6 +1,6 @@
 import pygame
 from game.basket import Basket
-from game.fruit import Fruit
+from game.fruit import Fruit, SplashParticle
 
 class GameEngine:
     def __init__(self, width, height):
@@ -8,6 +8,7 @@ class GameEngine:
         self.height = height
         self.basket = Basket(width, height)
         self.fruits = []
+        self.particles = []
 
         self.score = 0
         self.lives = 3
@@ -24,6 +25,11 @@ class GameEngine:
                 self.reset()
 
     def update(self):
+        for particle in self.particles[:]:
+            particle.update()
+            if particle.life <= 0:
+                self.particles.remove(particle)
+
         if self.game_state != "PLAYING":
             return
 
@@ -53,19 +59,31 @@ class GameEngine:
                 else:
                     self.score += 1
                     self.spawn_delay = max(250, min(750, 750 - self.score * 15))
+                    self._create_splash(fruit.x, fruit.y, fruit.color)
                 continue
 
             if fruit.is_missed(self.height):
                 self.fruits.remove(fruit)
                 if not fruit.is_hazard:
+                    self._create_splash(
+                        fruit.x,
+                        self.height - 25,
+                        fruit.color,
+                        floor_splash=True,
+                    )
                     self.lives -= 1
                     if self.lives <= 0:
                         self.game_state = "GAME_OVER"
                         break
 
+    def _create_splash(self, x, y, color, floor_splash=False):
+        for _ in range(6):
+            self.particles.append(SplashParticle(x, y, color, floor_splash))
+
     def reset(self):
         self.basket = Basket(self.width, self.height)
         self.fruits.clear()
+        self.particles.clear()
         self.score = 0
         self.lives = 3
         self.spawn_delay = 750
@@ -81,6 +99,8 @@ class GameEngine:
         self.basket.render(screen)
         for fruit in self.fruits:
             fruit.render(screen)
+        for particle in self.particles:
+            particle.render(screen)
 
         score_surf = self.font_medium.render(f"Score: {self.score}", True, (255, 220, 80))
         screen.blit(score_surf, (25, 20))

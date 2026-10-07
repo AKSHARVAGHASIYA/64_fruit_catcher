@@ -55,3 +55,31 @@ class Fruit:
 
         pygame.draw.circle(surface, self.color, center, self.radius)
         pygame.draw.circle(surface, (255, 255, 255), (int(self.x - 4), int(self.y - 4)), 3)
+
+
+class SplashParticle:
+    def __init__(self, x, y, color, floor_splash=False):
+        self.x = x
+        self.y = y
+        self.color = color
+        self.radius = random.randint(2, 4)
+        self.life = 24
+        self.velocity_x = random.uniform(-2.5, 2.5)
+        if floor_splash:
+            self.velocity_y = random.uniform(-2.2, -0.4)
+        else:
+            self.velocity_y = random.uniform(-4.0, -1.5)
+
+    def update(self):
+        self.x += self.velocity_x
+        self.y += self.velocity_y
+        self.velocity_y += 0.2
+        self.life -= 1
+
+    def render(self, surface):
+        pygame.draw.circle(
+            surface,
+            self.color,
+            (int(self.x), int(self.y)),
+            self.radius,
+        )
